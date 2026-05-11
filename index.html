@@ -22,7 +22,6 @@
       min-height: 100vh;
     }
 
-    /* Animations */
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
@@ -35,6 +34,10 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.02); }
     }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(30px); }
+    }
 
     .admin-container {
       max-width: 1400px;
@@ -42,7 +45,6 @@
       animation: fadeInUp 0.5s ease-out;
     }
 
-    /* Header Admin */
     .admin-header {
       background: linear-gradient(135deg, #0A3B1A, #1A5F2E);
       border-radius: 32px;
@@ -93,7 +95,6 @@
       transform: scale(1.05);
     }
 
-    /* Stats Grid */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -113,24 +114,19 @@
       transform: translateY(-5px);
       box-shadow: 0 10px 25px rgba(0,0,0,0.12);
     }
-    .stat-card:nth-child(1) { animation-delay: 0s; }
-    .stat-card:nth-child(2) { animation-delay: 0.1s; }
-    .stat-card:nth-child(3) { animation-delay: 0.2s; }
-    .stat-card:nth-child(4) { animation-delay: 0.3s; }
     .stat-card h4 {
       color: #5a6e4a;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 0.5rem;
     }
     .stat-number {
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 800;
       color: #1A5F2E;
     }
 
-    /* Filtres périodes */
     .filter-section {
       background: white;
       border-radius: 60px;
@@ -161,7 +157,6 @@
       box-shadow: 0 4px 12px rgba(26,95,46,0.3);
     }
 
-    /* Sections */
     .section {
       background: white;
       border-radius: 28px;
@@ -185,7 +180,6 @@
       padding-bottom: 0.5rem;
     }
 
-    /* Formulaire ajout produit */
     .form-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -220,7 +214,6 @@
       resize: vertical;
     }
 
-    /* Bouton image - ouvre galerie */
     .image-upload-btn {
       background: linear-gradient(135deg, #1A5F2E, #2C7A3E);
       color: white;
@@ -250,7 +243,6 @@
       object-fit: cover;
       border: 3px solid #A5F06A;
       transition: all 0.3s;
-      animation: pulse 0.5s ease;
     }
     .preview-img:hover {
       transform: scale(1.05);
@@ -270,10 +262,8 @@
     .publish-btn:hover {
       background: #b84302;
       transform: scale(1.03);
-      box-shadow: 0 5px 15px rgba(217,81,3,0.3);
     }
 
-    /* Tables */
     .table-responsive {
       overflow-x: auto;
       border-radius: 20px;
@@ -304,10 +294,6 @@
       height: 45px;
       border-radius: 12px;
       object-fit: cover;
-      transition: transform 0.2s;
-    }
-    .product-img:hover {
-      transform: scale(1.1);
     }
     .badge {
       padding: 0.2rem 0.7rem;
@@ -344,11 +330,9 @@
       cursor: pointer;
       font-size: 0.7rem;
       font-weight: 600;
-      transition: all 0.2s;
     }
     .delete-product:hover {
       background: #c0392b;
-      transform: scale(1.05);
     }
 
     .toast {
@@ -372,11 +356,17 @@
       background: linear-gradient(135deg, #c0392b, #e74c3c);
     }
 
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #8ba07a;
+    }
+
     @media (max-width: 700px) {
       body { padding: 1rem; }
       th, td { font-size: 0.7rem; padding: 0.5rem; }
       .admin-header { padding: 1rem; }
-      .stat-number { font-size: 1.5rem; }
+      .stat-number { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -390,9 +380,8 @@
     <button class="view-site-btn" id="viewSiteBtn"><i class="fas fa-store"></i> Voir la boutique</button>
   </div>
 
-  <!-- Statistiques -->
   <div class="stats-grid">
-    <div class="stat-card"><h4><i class="fas fa-chart-line"></i> Chiffre d'affaires</h4><div class="stat-number" id="statRevenue">0</div><span class="stat-unit">CFA</span></div>
+    <div class="stat-card"><h4><i class="fas fa-chart-line"></i> Chiffre d'affaires</h4><div class="stat-number" id="statRevenue">0</div><span>CFA</span></div>
     <div class="stat-card"><h4><i class="fas fa-shopping-cart"></i> Commandes</h4><div class="stat-number" id="statOrders">0</div></div>
     <div class="stat-card"><h4><i class="fas fa-boxes"></i> Produits vendus</h4><div class="stat-number" id="statItemsSold">0</div></div>
     <div class="stat-card"><h4><i class="fas fa-clock"></i> En attente</h4><div class="stat-number" id="statPending">0</div></div>
@@ -405,7 +394,6 @@
     <button class="period-btn" data-period="all">🌍 Toutes</button>
   </div>
 
-  <!-- Ajout produit -->
   <div class="section">
     <h2><i class="fas fa-plus-circle"></i> Ajouter un produit</h2>
     <div class="form-row">
@@ -424,24 +412,21 @@
       <div class="form-group">
         <label>Image du produit *</label>
         <input type="file" id="imageFileInput" accept="image/*" style="display:none;">
-        <button id="imagePickerBtn" class="image-upload-btn"><i class="fas fa-images"></i> 📸 Choisir une image (galerie)</button>
+        <button id="imagePickerBtn" class="image-upload-btn"><i class="fas fa-images"></i> 📸 Choisir une image</button>
         <input type="hidden" id="imageUrl">
         <div id="previewImg"></div>
-        <p style="font-size:0.7rem; color:#888; margin-top:0.3rem;"><i class="fas fa-info-circle"></i> Cliquez = ouvre la galerie de votre appareil</p>
       </div>
     </div>
     <button id="publishProductBtn" class="publish-btn"><i class="fas fa-save"></i> Publier le produit</button>
   </div>
 
-  <!-- Liste des produits existants -->
   <div class="section">
     <h2><i class="fas fa-box-open"></i> Produits existants</h2>
     <div class="table-responsive" id="productsTableContainer">Chargement...</div>
   </div>
 
-  <!-- Commandes clients -->
   <div class="section">
-    <h2><i class="fas fa-truck"></i> Commandes clients <span id="pendingBadge" style="font-size:0.8rem; background:#f4a261; padding:0.2rem 0.6rem; border-radius:40px; color:white;"></span></h2>
+    <h2><i class="fas fa-truck"></i> Commandes en attente</h2>
     <div class="table-responsive" id="ordersTableContainer">Chargement...</div>
   </div>
 </div>
@@ -462,7 +447,7 @@
   
   let database = null;
   let products = [];
-  let orders = [];
+  let allOrders = [];     // Stocke toutes les commandes
   let currentPeriod = "day";
   
   function showToast(msg, isError = false) {
@@ -483,7 +468,7 @@
     console.log("✅ Firebase connecté");
   } catch(e) {
     console.error("Erreur Firebase:", e);
-    showToast("⚠️ Erreur de connexion à Firebase. Vérifiez votre connexion internet.", true);
+    showToast("⚠️ Erreur de connexion à Firebase.", true);
   }
   
   // ==================== UPLOAD IMAGE VERS CLOUDINARY ====================
@@ -506,12 +491,11 @@
       }
     } catch (error) {
       console.error(error);
-      showToast("❌ Erreur d'upload image: " + error.message, true);
+      showToast("❌ Erreur d'upload image", true);
       return null;
     }
   }
   
-  // Bouton galerie - OUVRE DIRECTEMENT LA GALERIE
   const fileInput = document.getElementById('imageFileInput');
   const imagePickerBtn = document.getElementById('imagePickerBtn');
   
@@ -525,45 +509,37 @@
     fileInput.addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      
       if (!file.type.startsWith('image/')) {
         showToast("Veuillez sélectionner une image", true);
         return;
       }
-      
       if (file.size > 5 * 1024 * 1024) {
         showToast("L'image ne doit pas dépasser 5 Mo", true);
         return;
       }
       
-      // Aperçu local
       const reader = new FileReader();
       reader.onload = function(evt) {
         const previewDiv = document.getElementById("previewImg");
-        previewDiv.innerHTML = `<img src="${evt.target.result}" class="preview-img" alt="Aperçu"><p style="font-size:0.7rem; color:orange;">⏳ Upload en cours...</p>`;
+        previewDiv.innerHTML = `<img src="${evt.target.result}" class="preview-img" alt="Aperçu"><p style="font-size:0.7rem; color:orange;">⏳ Upload...</p>`;
       };
       reader.readAsDataURL(file);
       
-      showToast("⏳ Téléchargement de l'image...");
       const imageUrl = await uploadImageToCloudinary(file);
-      
       if (imageUrl) {
         document.getElementById("imageUrl").value = imageUrl;
         const previewDiv = document.getElementById("previewImg");
-        previewDiv.innerHTML = `<img src="${imageUrl}" class="preview-img" alt="Aperçu"><p style="font-size:0.7rem; color:green;">✅ Image prête !</p>`;
-        showToast("✅ Image téléchargée avec succès !");
+        previewDiv.innerHTML = `<img src="${imageUrl}" class="preview-img" alt="Aperçu"><p style="font-size:0.7rem; color:green;">✅ Image prête</p>`;
+        showToast("✅ Image téléchargée !");
       } else {
-        document.getElementById("previewImg").innerHTML = `<p style="color:red;">❌ Échec de l'upload</p>`;
+        document.getElementById("previewImg").innerHTML = `<p style="color:red;">❌ Échec</p>`;
       }
     });
   }
   
   // ==================== PRODUITS ====================
   function loadProducts() {
-    if (!database) {
-      document.getElementById('productsTableContainer').innerHTML = '<p style="color:red;">❌ Firebase non connecté. Vérifiez votre connexion.</p>';
-      return;
-    }
+    if (!database) return;
     const productsRef = database.ref('produits');
     productsRef.on('value', (snapshot) => {
       const data = snapshot.val();
@@ -577,9 +553,6 @@
         products = [];
       }
       renderProductsTable();
-    }, (error) => {
-      console.error(error);
-      showToast("Erreur chargement produits: " + error.message, true);
     });
   }
   
@@ -587,7 +560,7 @@
     const container = document.getElementById('productsTableContainer');
     if (!container) return;
     if (products.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:2rem;">🌟 Aucun produit. Ajoutez votre premier produit !</p>';
+      container.innerHTML = '<div class="empty-state">🌟 Aucun produit. Ajoutez votre premier produit !</div>';
       return;
     }
     let html = `<table><thead><tr><th>Image</th><th>Nom</th><th>Prix (CFA)</th><th>Catégorie</th><th>Action</th></tr></thead><tbody>`;
@@ -638,11 +611,6 @@
       return;
     }
     
-    if (isNaN(price) || price <= 0) {
-      showToast("❌ Prix invalide", true);
-      return;
-    }
-    
     if (!database) {
       showToast("❌ Firebase non connecté", true);
       return;
@@ -658,7 +626,7 @@
     };
     
     await database.ref('produits').push(newProduct);
-    showToast("✅ Produit publié avec succès !");
+    showToast("✅ Produit publié !");
     
     document.getElementById('prodName').value = "";
     document.getElementById('prodPrice').value = "";
@@ -668,44 +636,41 @@
     fileInput.value = "";
   }
   
-  // ==================== COMMANDES ====================
+  // ==================== COMMANDES - SEULES LES COMMANDES EN ATTENTE SONT AFFICHÉES ====================
   function loadOrders() {
     if (!database) return;
     const ordersRef = database.ref('commandes');
     ordersRef.on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        orders = Object.keys(data).map(key => ({
+        allOrders = Object.keys(data).map(key => ({
           id: key,
           ...data[key],
           total: Number(data[key].total)
         }));
       } else {
-        orders = [];
+        allOrders = [];
       }
-      renderOrdersTable();
+      // Filtrer pour n'afficher que les commandes en attente (non traitées)
+      const pendingOrders = allOrders.filter(o => o.status !== "confirmée" && o.status !== "rejetée");
+      renderOrdersTable(pendingOrders);
       updateStats();
     });
   }
   
-  function renderOrdersTable() {
+  function renderOrdersTable(ordersToShow) {
     const container = document.getElementById('ordersTableContainer');
     if (!container) return;
-    if (orders.length === 0) {
-      container.innerHTML = '<p style="text-align:center; padding:2rem;">📭 Aucune commande pour le moment.</p>';
-      document.getElementById('pendingBadge').innerHTML = "";
+    if (ordersToShow.length === 0) {
+      container.innerHTML = '<div class="empty-state">✅ Aucune commande en attente. Toutes les commandes ont été traitées !</div>';
       return;
     }
     
-    const pendingCount = orders.filter(o => o.status !== "confirmée" && o.status !== "rejetée").length;
-    document.getElementById('pendingBadge').innerHTML = pendingCount ? ` ${pendingCount} en attente` : "";
-    
     let html = `<table><thead><tr><th>Date</th><th>Client</th><th>Téléphone</th><th>Adresse</th><th>Total</th><th>Statut</th><th>Itinéraire</th><th>Actions</th></tr></thead><tbody>`;
     
-    orders.forEach(o => {
+    ordersToShow.forEach(o => {
       const date = o.date || (o.createdAt ? new Date(o.createdAt).toLocaleString('fr-FR') : "N/A");
-      const statusClass = o.status === "confirmée" ? "badge-confirmed" : (o.status === "rejetée" ? "badge-rejected" : "badge-pending");
-      const statusLabel = o.status === "confirmée" ? "✅ Confirmée" : (o.status === "rejetée" ? "❌ Rejetée" : "⏳ En attente");
+      const statusLabel = o.status === "en_attente" ? "⏳ En attente" : (o.status === "confirmée" ? "✅ Confirmée" : "❌ Rejetée");
       
       html += `
         <tr>
@@ -714,7 +679,7 @@
           <td>${escapeHtml(o.clientPhone || '-')}</td>
           <td>${escapeHtml(o.clientAddress || '-')}</td>
           <td><strong>${(o.total || 0).toLocaleString()} CFA</strong></td>
-          <td><span class="badge ${statusClass}">${statusLabel}</span></td>
+          <td><span class="badge badge-pending">${statusLabel}</span></td>
           <td><button class="btn-sm btn-info" onclick="openItineraire('${escapeHtml(o.clientAddress || 'Niamey')}')"><i class="fas fa-map-marker-alt"></i> Itinéraire</button></td>
           <td>
             <button class="btn-sm btn-success" onclick="updateOrderStatus('${o.id}', 'confirmée')"><i class="fas fa-check"></i> Valider</button>
@@ -723,17 +688,19 @@
         </tr>
       `;
     });
-    html += `</tbody><table>`;
+    html += `</tbody></table>`;
     container.innerHTML = html;
   }
   
+  // Mise à jour du statut d'une commande - elle disparaît immédiatement de la liste
   window.updateOrderStatus = async (id, status) => {
     if (database) {
       await database.ref(`commandes/${id}`).update({ 
         status: status,
-        updatedAt: new Date().toISOString()
+        processedAt: new Date().toISOString()
       });
-      showToast(`Commande ${status === "confirmée" ? "validée ✅" : "rejetée ❌"}`);
+      showToast(`Commande ${status === "confirmée" ? "validée ✅" : "rejetée ❌"} - Elle a disparu de la liste`);
+      // La commande disparaît automatiquement car le filtre ne montre plus que les statuts "en_attente"
     }
   };
   
@@ -744,7 +711,7 @@
   
   // ==================== STATISTIQUES ====================
   function updateStats() {
-    let filteredOrders = [...orders];
+    let filteredOrders = [...allOrders];
     const now = new Date();
     
     if (currentPeriod === "day") {
@@ -766,7 +733,7 @@
     const revenue = confirmedOrders.reduce((sum, o) => sum + (o.total || 0), 0);
     const totalOrders = filteredOrders.length;
     const itemsSold = confirmedOrders.reduce((sum, o) => sum + (o.itemsCount || 0), 0);
-    const pendingCount = orders.filter(o => o.status !== "confirmée" && o.status !== "rejetée").length;
+    const pendingCount = allOrders.filter(o => o.status !== "confirmée" && o.status !== "rejetée").length;
     
     document.getElementById('statRevenue').innerHTML = revenue.toLocaleString();
     document.getElementById('statOrders').innerHTML = totalOrders;
@@ -787,7 +754,7 @@
     });
   }
   
-  // ==================== BOUTON VOIR LA BOUTIQUE - LIEN VERCEL ====================
+  // ==================== BOUTON VOIR LA BOUTIQUE ====================
   const viewSiteBtn = document.getElementById('viewSiteBtn');
   if (viewSiteBtn) {
     viewSiteBtn.addEventListener('click', () => {
